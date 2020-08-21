@@ -736,8 +736,6 @@ class Claax1:
 
             try:
 
-                time.sleep(10)
-
                 t = time.gmtime()
 
                 if t[4] == 0:
@@ -769,6 +767,10 @@ class Claax1:
                 self.send_telegram_message("Claax1 connection problem")
 
                 time.sleep(240)
+                
+            finally:
+                
+                time.sleep(10)
 
     # ******************************************* RUN IT SUNDAY *****************************************************
 
@@ -806,8 +808,6 @@ class Claax1:
         while flag_2:
 
             try:
-
-                time.sleep(10)
 
                 t = time.gmtime()
 
@@ -857,7 +857,11 @@ class Claax1:
                 self.send_telegram_message("Claax1 connection problem")
 
                 time.sleep(240)
-
+            
+            finally:
+                
+                time.sleep(10)
+                
 
 # ************************************************* END OF THE SCRIPT **************************************************
 
