@@ -261,21 +261,27 @@ class Claax1:
 
             print("ERROR MEANWHILE CONVERTING")
 
-    @staticmethod  # TO GET A TEXT ONCE THE STRATEGY CHECKS SO YOU KNOW THERE WERE NO ISSUES
+    @staticmethod
     def send_telegram_message(text_to_send):
 
         import requests
         import json
         import os
 
-        token = os.environ.get("Your_Telegram__Bot_Token")
-        url_api = f'https://api.telegram.org/bot{token}'
+        try:
 
-        url_message = url_api + "/sendmessage?chat_id={}&text={}".format("your chat ID", text_to_send)
-        response = requests.get(url_message)
-        content = response.content.decode("utf8")
-        data_json = json.loads(content)
-        print(data_json)
+            token = "1217610741:AAE_aUNnfQABvzSrQ6LjgeMHCyf60DGewKc"
+            url_api = f'https://api.telegram.org/bot{token}'
+
+            url_message = url_api + "/sendmessage?chat_id={}&text={}".format(1039138030, text_to_send)
+            response = requests.get(url_message)
+            content = response.content.decode("utf8")
+            data_json = json.loads(content)
+            print(data_json)
+
+        except:
+
+            print("TELEGRAM CONNECTION PROBLEM")
 
     # *************************************************************************************************************
 
@@ -725,152 +731,97 @@ class Claax1:
 
     # ********************************************** RUN IT **********************************************************
 
-    def run_it(self):
+    def run_it_24_7(self):
 
         import time
 
-        tn = time.gmtime()
-        print(f"START TIME: {tn[3]}:{tn[4]}:{tn[5]}")
-
         while True:
 
-            try:
+            ti = time.gmtime()
 
-                t = time.gmtime()
+            if (ti.tm_wday == 5) or (ti.tm_wday == 6 and ti[3] < 21) or (ti.tm_wday == 4 and ti[3] >= 21):
 
-                if t[4] == 0:
+                time.sleep(10)
+
+                continue
+
+            elif ti.tm_wday == 4 and ti[3] == 20 and ti[4] >= 56:  # todo check the end of the trading week timing
+
+                try:
 
                     tm = time.gmtime()
                     print(f"**************\nTIME: {tm[3]}:{tm[4]}:{tm[5]} - CHECK")
 
-                    self.place_order_all_pairs(400, "H1", 140, -140)
+                    self.place_order_all_pairs_21(510, "M15", 125, -125)
 
                     tme = time.gmtime()
                     print(f"TIME: {tme[3]}:{tme[4]}:{tme[5]} - CHECK DONE\n**************")
 
                     self.open_positions_db_writing()
 
-                    if t[3] in [2, 10, 18]:
-                        self.account_summary_db_writing()
+                    self.account_summary_db_writing()
 
-                    self.send_telegram_message("Claax1 checked")
+                    self.send_telegram_message("Claax6 M15 checked")
 
                     time.sleep(60)
 
-            except:
+                except:
 
-                tm = time.gmtime()
+                    tm = time.gmtime()
 
-                print(f"**************\nTIME: {tm[3]}:{tm[4]}:{tm[5]} "
-                      f"AN ERROR AS OCCURRED MEANWHILE CONNECTING\n**************")
+                    print(f"**************\nTIME: {tm[3]}:{tm[4]}:{tm[5]} "
+                          f"AN ERROR AS OCCURRED MEANWHILE CONNECTING\n**************")
 
-                self.send_telegram_message("Claax1 connection problem")
+                    self.send_telegram_message("Claax6 M15 connection problem")
 
-                time.sleep(240)
-                
-            finally:
-                
-                time.sleep(10)
+                    time.sleep(240)
 
-    # ******************************************* RUN IT SUNDAY *****************************************************
+                finally:
 
-    def run_it_sunday_night(self):
+                    time.sleep(400)  # to make sure it pauses till the trading week is over
 
-        import time
+            elif ti[4] in [0, 15, 30, 45]:
 
-        while True:
-
-            ts = time.gmtime()
-
-            if ts[3] == 20 and ts[4] >= 55:
-
-                print("SUNDAY'S FIRST CHECK")
-
-                self.open_positions_db_writing()  # WRITES THE POSITIONS OF THE LAST FRIDAY'S CHECK
-
-                self.run_it()
-
-            else:
-
-                time.sleep(60)
-
-    # ******************************************** RUN IT FRIDAY *****************************************************
-
-    def run_it_friday_night(self):
-
-        import time
-
-        tn = time.gmtime()
-        print(f"START TIME: {tn[3]}:{tn[4]}:{tn[5]}")
-
-        flag_2 = True
-
-        while flag_2:
-
-            try:
-
-                t = time.gmtime()
-
-                if t[4] == 0:
+                try:
 
                     tm = time.gmtime()
                     print(f"**************\nTIME: {tm[3]}:{tm[4]}:{tm[5]} - CHECK")
 
-                    self.place_order_all_pairs(400, "H1", 140, -140)
+                    self.place_order_all_pairs(510, "M15", 125, -125)
 
                     tme = time.gmtime()
                     print(f"TIME: {tme[3]}:{tme[4]}:{tme[5]} - CHECK DONE\n**************")
 
                     self.open_positions_db_writing()
 
-                    if t[3] in [2, 10, 18]:
-                        self.account_summary_db_writing()
+                    self.account_summary_db_writing()
 
-                    self.send_telegram_message("Claax1 checked")
+                    self.send_telegram_message("Claax6 M15 checked")
 
                     time.sleep(60)
 
-                elif t[3] == 19 and t[4] == 58:
+                except:
 
                     tm = time.gmtime()
-                    print(f"**************\nTIME: {tm[3]}:{tm[4]}:{tm[5]} - LAST CHECK")
 
-                    self.place_order_all_pairs_21(400, "H1", 140, -140)
+                    print(f"**************\nTIME: {tm[3]}:{tm[4]}:{tm[5]} "
+                          f"AN ERROR AS OCCURRED MEANWHILE CONNECTING\n**************")
 
-                    tme = time.gmtime()
-                    print(f"TIME: {tme[3]}:{tme[4]}:{tme[5]} - LAST CHECK DONE\n**************")
+                    self.send_telegram_message("Claax6 M15 connection problem")
 
-                    self.send_telegram_message("Claax1 (end of the week) checked")
+                    time.sleep(240)
 
-                    flag_2 = False
+                finally:
 
-                    break
-
-            except:
-
-                tm = time.gmtime()
-
-                print(
-                    f"**************\nTIME: {tm[3]}:{tm[4]}:{tm[5]} "
-                    f"AN ERROR AS OCCURRED MEANWHILE CONNECTING\n**************")
-
-                self.send_telegram_message("Claax1 connection problem")
-
-                time.sleep(240)
-            
-            finally:
-                
-                time.sleep(10)
+                    time.sleep(10)
                 
 
 # ************************************************* END OF THE SCRIPT **************************************************
 
 
-c = Claax1()
+Claax1().run_it_24_7()
 
-c.run_it()
-#c.run_it_friday_night()
-#c.run_it_sunday_night()
+# c = Claax1
 
 # c.place_order_all_pairs(400, "H1", 140, -140)
 # c.place_order_all_pairs_21(400, "H1", 140, -140)
